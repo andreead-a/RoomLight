@@ -1,0 +1,34 @@
+output_dir: outputs/run_default
+data_root: data/panoramas_cache   # see build_cache.py; a directory of EXRs also works
+wandb_project: roomlight
+
+model:
+  resolution: [128, 256]
+  latent_dim: 512
+  ch: 64
+  ch_mult: [1, 2, 4, 4]   # 128x256 -> 8x16 at the bottleneck
+  num_res_blocks: 1
+  z_channels: 32
+  norm_groups: 8
+
+train:
+  epochs: 300
+  batch_size: 32
+  num_workers: 2
+  lr: 2.0e-4
+  min_lr: 1.0e-5
+  warmup_iters: 250
+  betas: [0.9, 0.99]
+  weight_decay: 0.01
+  grad_clip: 10.0
+  tilt_deg: 7.0           # camera-tilt augmentation, degrees; 0 disables
+  val_every: 5            # epochs; also writes last_epoch.pth
+  ckpt_every: 10          # epochs; writes epoch_<n>.pth, 0 disables
+  loss:
+    w_kl: 0.001           # KL is summed over latent dims (nats per panorama)
+    kl_anneal_iters: 1000
+    w_grad_hdr: 2.0       # multi-scale gradient loss on log radiance
+    w_grad_depth: 1.0     # multi-scale gradient loss on log depth
+    w_peak: 0.1           # log-radiance L1 on the brightest pixels, in linear radiance
+    grad_scales: 4
+    peak_quantile: 0.995

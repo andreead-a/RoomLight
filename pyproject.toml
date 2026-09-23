@@ -1,0 +1,53 @@
+[project]
+name = "roomlight"
+version = "1.0.0"
+description = "A generative prior for indoor HDR illumination, and inverse rendering through it"
+license = "CC-BY-4.0"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "torch>=2.7,<2.8",
+    "torchvision",
+    "numpy",
+    "omegaconf",
+    "mitsuba>=3.8",
+    "pyexr",
+    "opencv-python",
+    "trimesh",
+    "huggingface_hub",
+    "tqdm",
+    "matplotlib",
+    "wandb",
+]
+
+[project.optional-dependencies]
+# prepare_training_data.py only: LaMa inpainting and MoGe-2 depth.
+data = [
+    "simple-lama-inpainting>=0.1.2",
+    "moge",
+    "utils3d",
+    "scipy",
+]
+
+[tool.uv]
+# simple-lama-inpainting pins numpy<2 and pillow<10, neither of which is needed;
+# MoGe pulls in gradio and a demo pipeline package, neither of which is used.
+override-dependencies = [
+    "numpy",
+    "pillow",
+    "fire",
+    "gradio; python_version < '3'",
+    "pipeline; python_version < '3'",
+    "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@e26f78ca8ebe68561422d5ee3eb93d2ce69d2940",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+torchvision = { index = "pytorch-cu126" }
+moge = { git = "https://github.com/microsoft/MoGe.git", rev = "07444410f1e33f402353b99d6ccd26bd31e469e8" }
+utils3d = { git = "https://github.com/EasternJournalist/utils3d.git", rev = "e26f78ca8ebe68561422d5ee3eb93d2ce69d2940" }
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true

@@ -1,0 +1,40 @@
+# Inverse rendering on the synthetic benchmark (fit.py) and its scoring (evaluate.py).
+
+source_dir: data/benchmark/scenes   # see setup_benchmark.py and the README
+save_dir: results                # results land in <save_dir>/<run name>/<scene>/<material>/
+scene_list: null                 # optional text file with one scene name per line
+materials: [mirror, mattesilver, diffuse]
+
+# Shared by every mode. The prior_al mode optimises a 512-d latent and a scalar log-exposure
+# through the frozen decoder; the direct modes optimise the environment pixels themselves.
+optim:
+  n_iters: 501
+  lr: 0.1
+  betas: [0.9, 0.99]
+  grad_clip: 0.05
+  spp: 64                # samples per pixel of the differentiable render
+  seed: 0
+  scale_init: 0.18       # initial exposure (prior_al) / initial uniform radiance (direct modes)
+  w_log_mse: 0.1         # weight of the log-domain image MSE, added to the linear one
+  sat_thresh: 0.99       # photograph pixels at or above this are treated as saturated ...
+  clamp_max: 10.0        # ... and the render is only clamped to [0, 1] there; elsewhere to this
+  w_rep: 0.1             # repulsion keeping the emitting shell outside the objects
+  rep_margin: 0.02       # clearance the repulsion asks for, metres
+  rep_voxel: 0.002       # voxel size the object point cloud is thinned to, metres
+  preview_every: 0       # write a render and the environment every N iterations; 0 disables
+
+# direct_al: free log-radiance and log-depth per pixel on the shell mesh, no decoder.
+direct_al:
+  resolution: [128, 256]
+  depth: 3.0             # initial shell radius, metres
+  w_smooth: 5.0e-5       # smoothness prior (squared neighbour differences) on radiance
+  w_depth_smooth: 1.0e-4 # the same on depth
+  smooth_domain: log     # log or linear
+
+# direct_envmap: the environment at infinity, radiance only, no shell, no repulsion.
+direct_envmap:
+  w_rep: 0.0
+  w_depth_smooth: 0.0
+
+evaluate:
+  spp: 4096              # samples per pixel of the scoring renders (prediction and ground truth)
