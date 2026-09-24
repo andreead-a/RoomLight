@@ -105,12 +105,15 @@ Losses and image panels are logged to [wandb](https://wandb.ai) (set `WANDB_MODE
 
 ## 🎓 Citation
 
+Should you find our work useful in your research, please cite:
+
+
 ```bibtex
-@article{Ardelean2026RoomLight,
-    title={RoomLight: A 2.5D Illumination Prior for Indoor Environments},
-    author={Ardelean, Andreea and Egger, Bernhard},
-    journal={arXiv preprint},
-    year={2026}
+@article{ardelean2026roomlight,
+  title   = {RoomLight: A 2.5D Illumination Prior for Indoor Environments},
+  author  = {Ardelean, Andreea and Egger, Bernhard},
+  journal = {arXiv preprint arXiv:2609.28300},
+  year    = {2026}
 }
 ```
 
